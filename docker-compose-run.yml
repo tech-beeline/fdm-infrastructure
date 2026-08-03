@@ -792,6 +792,39 @@ services:
       - fdm-network
     restart: unless-stopped
 
+  staging-service:
+    image: ghcr.io/tech-beeline/beeatlas-staging-service:latest
+    container_name: staging-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+      products-service:
+        condition: service_healthy
+    env_file:
+      - ./common.env
+    environment:
+      SPRING_DATASOURCE_CAMUNDA_URL: jdbc:postgresql://postgres:5432/fdm_db
+      SPRING_DATASOURCE_CAMUNDA_USERNAME: postgres
+      SPRING_DATASOURCE_CAMUNDA_PASSWORD: postgres
+      SPRING_DATASOURCE_STAGING_HIKARI_JDBC-URL: jdbc:postgresql://postgres:5432/fdm_db
+      SPRING_DATASOURCE_STAGING_HIKARI_USERNAME: postgres
+      SPRING_DATASOURCE_STAGING_HIKARI_PASSWORD: postgres
+      CAMUNDA_BPM_DATABASE_SCHEMA_UPDATE: "true"
+      CAMUNDA_BPM_ADMIN_USER_ID: beeatlas
+      CAMUNDA_BPM_ADMIN_USER_PASSWORD: beeatlas
+      STAGING_CAMUNDA_SCHEMA: staging_camunda
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 90s
+    ports:
+      - "${STAGING_SERVICE_PORT:-8099}:8080"
+    networks:
+      - fdm-network
+    restart: unless-stopped
+
   web-ide:
     build:
       context: ./web-ide
