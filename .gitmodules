@@ -66,3 +66,6 @@
 	path = services/beeatlas-doc
 	url = https://github.com/tech-beeline/beeatlas-doc.git
 	branch = main
+[submodule "services/staging-service"]
+	path = services/staging-service
+	url = https://github.com/tech-beeline/beeatlas-staging-service.git
