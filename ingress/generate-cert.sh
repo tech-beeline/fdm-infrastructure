@@ -1,4 +1,5 @@
 #!/bin/sh
+
 CERT_DIR="/etc/nginx/certs"
 CERT_FILE="$CERT_DIR/nginx-selfsigned.crt"
 KEY_FILE="$CERT_DIR/nginx-selfsigned.key"
