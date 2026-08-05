@@ -530,26 +530,12 @@ services:
 
   # Init
   on-premises-init:
-    image: nginx:alpine
+    image: httpd:alpine
     volumes:
       - ./structurizr:/data
     env_file:
       - ./structurizr.env
-    # ONPREMISES_PASSWORD is stored in structurizr.env
-    entrypoint: >
-      sh -c "
-        CONFIG_FILE=/data/structurizr.properties
-        
-        if [ -f \"$$CONFIG_FILE\" ] && grep -q \"^structurizr.apiKey=\" \"$$CONFIG_FILE\"; then
-          echo \"✅ Configuration exists already\"
-          exit 0
-        fi
-        
-        echo \"🔑 Generationg structurizr.apiKey...\"
-        HASH=\$$(htpasswd -bnBC 10 \"\" \"$$ONPREMISES_PASSWORD\" | tr -d ':\n') &&
-        echo \"structurizr.apiKey=$$HASH\" > \"$$CONFIG_FILE\" &&
-        echo \"✅ structurizr.apiKey was stored in $$CONFIG_FILE\"
-      "
+    entrypoint: /bin/sh -c "CONFIG_FILE=/data/structurizr.properties; if [ -f \"$$CONFIG_FILE\" ] && grep -q \"^structurizr.apiKey=.\+\" \"$$CONFIG_FILE\"; then echo '✅ Конфигурация уже существует и содержит ключ'; exit 0; fi; echo '🔑 Генерируем structurizr.apiKey...'; HASH=$$(htpasswd -bnBC 10 \"\" \"$$ONPREMISES_PASSWORD\" | tr -d ':\n'); echo \"structurizr.apiKey=$$HASH\" > \"$$CONFIG_FILE\"; echo '✅ structurizr.apiKey сохранён в $$CONFIG_FILE'"
 
   # Structurizr main container
   on-premises:
@@ -562,7 +548,7 @@ services:
     networks:
       - fdm-network
     depends_on:
-      structurizr-init:
+      on-premises-init:
         condition: service_completed_successfully
     command: >
       sh -c "
