@@ -1722,8 +1722,7 @@ tools:
       Список CJ (v2) Версия v2 списка CJ. По `HeaderInterceptor` URI содержит
       `/v2/product/cj`, поэтому заголовки могут не требоваться.
     method: GET
-    endpoint: >-
-      {{.Config.url}}/cx/api/cx/v2/product/cj?product-id={{.Args.product_id}}&sample={{.Args.sample}}&search={{.Args.search}}
+    endpoint: '{{.Config.url}}/cx/api/cx/v2/product/cj?product-id={{.Args.product_id}}'
     headers:
       Authorization: '{{.Request.Headers.Authorization}}'
       Content-Type: application/json
@@ -1833,8 +1832,7 @@ tools:
       Список CJ (v1) Возвращает список CJ с фильтрацией по продукту, выборке
       (`sample`) и поиску по имени. Учитывает доступные пользователю продукты.
     method: GET
-    endpoint: >-
-      {{.Config.url}}/cx/api/cx/v1/product/cj?idProduct={{.Args.idProduct}}&sample={{.Args.sample}}&search={{.Args.search}}
+    endpoint: '{{.Config.url}}/cx/api/cx/v1/product/cj'
     headers:
       Authorization: '{{.Request.Headers.Authorization}}'
       Content-Type: application/json
@@ -1888,8 +1886,7 @@ tools:
       Поиск BI по фильтру Фильтрация по тексту, продукту, статусу и признаку
       черновика. Параметры можно комбинировать.
     method: GET
-    endpoint: >-
-      {{.Config.url}}/cx/api/cx/v1/library/business-interactions/find?text={{.Args.text}}&id_product={{.Args.id_product}}&id_status={{.Args.id_status}}&draft={{.Args.draft}}
+    endpoint: '{{.Config.url}}/cx/api/cx/v1/library/business-interactions/find'
     headers:
       Authorization: '{{.Request.Headers.Authorization}}'
       Content-Type: application/json
