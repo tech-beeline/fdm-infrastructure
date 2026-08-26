@@ -41,7 +41,7 @@
 [submodule "services/events-history"]
 	path = services/events-history
 	url = https://github.com/tech-beeline/beeatlas-events-history.git
-	branch = master
+	branch = main
 [submodule "services/fdm-pack-loader"]
 	path = services/fdm-pack-loader
 	url = https://github.com/tech-beeline/beeatlas-fdm-pack-loader.git
