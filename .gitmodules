@@ -69,3 +69,7 @@
 [submodule "services/staging-service"]
 	path = services/staging-service
 	url = https://github.com/tech-beeline/beeatlas-staging-service.git
+[submodule "services/fdm-search"]
+	path = services/fdm-search
+	url = https://github.com/tech-beeline/beeatlas-fdm-search.git
+	branch = main
