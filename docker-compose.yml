@@ -185,6 +185,26 @@ services:
       retries: 5
       start_period: 120s
 
+  qdrant:
+    image: qdrant/qdrant:v1.13.2
+    container_name: fdm-qdrant
+    restart: unless-stopped
+    environment:
+      QDRANT__SERVICE__API_KEY: ${QDRANT_API_KEY:-qdrant}
+    ports:
+      - "${QDRANT_HTTP_PORT:-6333}:6333"
+      - "${QDRANT_GRPC_PORT:-6334}:6334"
+    volumes:
+      - qdrant-data:/qdrant/storage
+    networks:
+      - fdm-network
+    healthcheck:
+      test: [ "CMD-SHELL", "bash -c ':> /dev/tcp/127.0.0.1/6333'" ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
   document-service-minio:
     image: minio/minio:latest
     container_name: document-service-minio
@@ -876,6 +896,32 @@ services:
       - fdm-network
     restart: unless-stopped
 
+  fdm-search:
+    build:
+      context: ./services/fdm-search
+      dockerfile: Dockerfile
+    container_name: fdm-search
+    depends_on:
+      qdrant:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      capability-backend:
+        condition: service_healthy
+    env_file:
+      - ./common.env
+    healthcheck:
+      test: [ "CMD-SHELL", "python3 -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health').read()\" || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+    ports:
+      - "${FDM_SEARCH_SERVICE_PORT:-8100}:8080"
+    networks:
+      - fdm-network
+    restart: unless-stopped
+
   web-ide:
     build:
       context: ./web-ide
@@ -915,3 +961,4 @@ volumes:
   neo4j_import:
   neo4j_plugins:
   authentik-postgres-data:
+  qdrant-data:
